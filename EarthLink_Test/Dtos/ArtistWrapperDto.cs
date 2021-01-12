@@ -2,7 +2,7 @@
 {
     public class ArtistWrapperDto
     {
-        public string status { set; get; }
-        public ArtistDto result { set; get; }
+        public string Status { set; get; }
+        public ArtistDto Result { set; get; }
     }
 }
