@@ -20,15 +20,16 @@ namespace EarthLink_Test.Services
     public class YoutubeService : IYoutubeService
     {
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly string _auddApiMethod = "recognize";
+        private readonly string _auddApiToken = "place token here";
+        private readonly string _auddApiUrl = "https://api.audd.io/";
+        private readonly string _youtubeApiKey = "place key here";
 
         public YoutubeService(IWebHostEnvironment hostEnvironment)
         {
             _hostEnvironment = hostEnvironment;
         }
-        private string _auddApiToken = "place token here";
-        string _auddApiUrl = "https://api.audd.io/";
-        string _auddApiMethod = "recognize";
-        private string _youtubeApiKey = "place key here";
+
         public async Task<bool> DownloadVideo(string url, string fileName)
         {
             try
@@ -42,11 +43,10 @@ namespace EarthLink_Test.Services
                 await youtubeDl.DownloadAsync();
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
-
         }
 
         public async Task ConvertToMp3(string fileName)
@@ -63,52 +63,47 @@ namespace EarthLink_Test.Services
 
         public async Task<ArtistDto> RecognizeSong(string fileName)
         {
-            RequestHelper requestHelper = new RequestHelper();
-            NameValueCollection parameters = new NameValueCollection();
+            var requestHelper = new RequestHelper();
+            var parameters = new NameValueCollection();
             parameters.Add("method", _auddApiMethod);
             parameters.Add("api_token", _auddApiToken);
-            string response = requestHelper.ExecuteRequestSendFile(_auddApiUrl, parameters, null, GetDownloadDirctory() + $@"\{fileName}");
+            var response = requestHelper.ExecuteRequestSendFile(_auddApiUrl, parameters, null,
+                GetDownloadDirctory() + $@"\{fileName}");
             ArtistWrapperDto jsonResult = null;
             try
             {
                 jsonResult = JsonConvert.DeserializeObject<ArtistWrapperDto>(response);
                 return jsonResult.result;
             }
-            catch (Exception ex)
+            catch 
             {
                 return null;
             }
-
         }
 
         public async Task<List<SnippetDto>> GetArtistSongs(string artistName)
         {
-            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer
             {
                 ApiKey = _youtubeApiKey,
-                ApplicationName = this.GetType().ToString(),
-
+                ApplicationName = GetType().ToString()
             });
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = artistName;
             searchListRequest.MaxResults = 50;
             var searchListResponse = searchListRequest.Execute();
 
-            List<SnippetDto> results = new List<SnippetDto>();
+            var results = new List<SnippetDto>();
 
             foreach (var searchResult in searchListResponse.Items)
-            {
-                if (searchResult.Id.Kind.Contains("youtube#video") )
-                {
-                    results.Add( new SnippetDto()
+                if (searchResult.Id.Kind.Contains("youtube#video"))
+                    results.Add(new SnippetDto
                     {
-                        id = searchResult.Id.VideoId,
-                        title = searchResult.Snippet.Title,
-                        thumbnail = searchResult.Snippet.Thumbnails,
-                        kind = YoutubeEnums.video
+                        Id = searchResult.Id.VideoId,
+                        Title = searchResult.Snippet.Title,
+                        Thumbnail = searchResult.Snippet.Thumbnails,
+                        Kind = YoutubeEnums.video
                     });
-                }
-            }
 
             return results;
         }

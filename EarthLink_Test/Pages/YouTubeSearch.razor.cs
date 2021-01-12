@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Policy;
+using System.Threading;
 using System.Threading.Tasks;
 using EarthLink_Test.Data;
 using EarthLink_Test.Dtos;
@@ -11,12 +9,12 @@ namespace EarthLink_Test.Pages
 {
     public partial class YouTubeSearch
     {
-        private bool _spinnerDisplayState = false;
-        private UrlModel _url = new UrlModel();
-        private string _loadingText = "";
         private List<SnippetDto> _artistList = new List<SnippetDto>();
-        private bool _errorState = false;
+        private bool _errorState;
         private string _errorText = "";
+        private string _loadingText = "";
+        private bool _spinnerDisplayState;
+        private readonly UrlModel _url = new UrlModel();
 
         private async Task StartSearch()
         {
@@ -43,7 +41,7 @@ namespace EarthLink_Test.Pages
 
             await YoutubeService.ConvertToMp3(fileName);
             //brake 5 sec to make sure video is saved 
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
             await YoutubeService.Cut1Min(fileName);
 
@@ -51,7 +49,7 @@ namespace EarthLink_Test.Pages
             StateHasChanged();
             await Task.Delay(1);
             //brake 5 sec to make sure audio is saved 
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
             var artist = YoutubeService.RecognizeSong($"{fileName}Cuted.mp3").Result;
             if (artist == null)
@@ -75,8 +73,6 @@ namespace EarthLink_Test.Pages
             StateHasChanged();
             await Task.Delay(1);
             await YoutubeService.RemoveFiles(fileName);
-
         }
-
     }
 }

@@ -4,6 +4,6 @@
     {
         playlist = 1,
         channel = 2,
-        video = 3,
+        video = 3
     }
 }
