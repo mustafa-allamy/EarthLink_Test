@@ -73,7 +73,7 @@ namespace EarthLink_Test.Services
             try
             {
                 jsonResult = JsonConvert.DeserializeObject<ArtistWrapperDto>(response);
-                return jsonResult.result;
+                return jsonResult.Result;
             }
             catch 
             {
