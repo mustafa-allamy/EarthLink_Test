@@ -21,9 +21,9 @@ namespace EarthLink_Test.Services
     {
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly string _auddApiMethod = "recognize";
-        private readonly string _auddApiToken = "place token here";
+        private readonly string _auddApiToken = "03259f398f435dba51e19de69d1fde83";
         private readonly string _auddApiUrl = "https://api.audd.io/";
-        private readonly string _youtubeApiKey = "place key here";
+        private readonly string _youtubeApiKey = "AIzaSyAbsKIt8x7ylM33XFh3UNZDUC6VR-GMvdA";
 
         public YoutubeService(IWebHostEnvironment hostEnvironment)
         {
@@ -73,7 +73,7 @@ namespace EarthLink_Test.Services
             try
             {
                 jsonResult = JsonConvert.DeserializeObject<ArtistWrapperDto>(response);
-                return jsonResult.result;
+                return jsonResult.Result;
             }
             catch 
             {
