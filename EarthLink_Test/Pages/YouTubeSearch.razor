@@ -1,0 +1,54 @@
+﻿@page "/youtubesearch"
+@using EarthLink_Test.Interfaces.Services
+<link rel="stylesheet" href="css/YouTubeService.css" />
+@inject IYoutubeService YoutubeService
+<h3>YouTubeSearch</h3>
+<EditForm Model="@_url" OnValidSubmit="StartSearch">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="SearchBox">Search</label>
+        <InputText @bind-Value=_url.YoutubeUrl class="form-control" id="SearchBox" placeholder="Input Video Url" />
+        <ValidationMessage For="() => _url.YoutubeUrl" />
+    </div>
+    <input type="submit" class="btn btn-primary" value="Search" />
+</EditForm>
+@if (_spinnerDisplayState)
+{
+
+    <div>
+        <h4 style="left: 50%; top: 35%; position:absolute">@_loadingText</h4>
+        <div class="spinner"></div>
+    </div>
+}
+@if (_errorState)
+{
+
+    <div>
+        <div class="errorMessage">@_errorText</div>
+    </div>
+}
+@if (_artistList.Any())
+{
+    <div class="container">
+        <h3 class="p-3 text-center">Here's what i got for you</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Thumbnail</th>
+                <th>Name</th>
+                <th>View</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in _artistList)
+            {
+                <tr>
+                    <td><img src="@user.thumbnail.Medium.Url" /></td>
+                    <td>@user.title </td>
+                    <td><a href="https://www.youtube.com/watch?v=@user.id" >Play</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
