@@ -65,7 +65,7 @@ namespace EarthLink_Test.Pages
                 _loadingText = "Fetching Artist list";
                 StateHasChanged();
                 await Task.Delay(1);
-                _artistList = await YoutubeService.GetArtistSongs("The Chainsmokers");
+                _artistList = await YoutubeService.GetArtistSongs(artist.Artist);
             }
 
 
